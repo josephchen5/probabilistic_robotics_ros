@@ -3,18 +3,33 @@ project(probabilistic_robotics_ros)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
+add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
-find_package(catkin REQUIRED COMPONENTS
+find_package(catkin REQUIRED
+  COMPONENTS
   roscpp
   rospy
   std_msgs
+  sensor_msgs
+  tf
+  visualization_msgs
 )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
+
+
+
+find_package(Eigen3)
+include_directories(
+  ${EIGEN3_INCLUDE_DIR}
+)
+
+
+
 
 
 ## Uncomment this if the package has a setup.py. This macro ensures
@@ -102,12 +117,30 @@ find_package(catkin REQUIRED COMPONENTS
 ## LIBRARIES: libraries you create in this project that dependent projects also need
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
-catkin_package(
+ catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES probabilistic_robotics_ros
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
-)
+ )
+
+#catkin_package(
+#  INCLUDE_DIRS
+ #   include
+#    ${EIGEN3_INCLUDE_DIR}
+#  LIBRARIES
+#    ${PROJECT_NAME}_core
+#  CATKIN_DEPENDS
+ #   roscpp
+ #   sensor_msgs
+#  DEPENDS
+#    Boost
+#)
+
+
+
+
+
 
 ###########
 ## Build ##
@@ -115,10 +148,19 @@ catkin_package(
 
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
-include_directories(
+#include_directories(
 # include
+#  ${catkin_INCLUDE_DIRS}
+#)
+
+include_directories(
+  include
   ${catkin_INCLUDE_DIRS}
+#  ${EIGEN3_INCLUDE_DIR}
+#  ${Boost_INCLUDE_DIRS}
 )
+
+
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
@@ -135,6 +177,10 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/probabilistic_robotics_ros_node.cpp)
 
+add_executable(imu_path src/imu_path.cpp)
+
+
+
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -149,6 +195,10 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+
+target_link_libraries(imu_path ${catkin_LIBRARIES})
+
+
 
 #############
 ## Install ##

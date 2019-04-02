@@ -1,0 +1,14 @@
+<launch>
+<arg name="output" default="screen"/>
+<arg name="razor_config_file" default="$(find probabilistic_robotics_ros)/config/sensors/razor_imu_9dof_config.yaml"/>
+
+
+<!-- Launch imu node  -->
+<node pkg="razor_imu_9dof" type="imu_node.py" name="imu_node" output="$(arg output)">
+  <rosparam file="$(arg razor_config_file)" command="load"/>
+  <!--param name="port" value="$(arg dev_path)"/-->
+</node>
+
+
+
+</launch>
