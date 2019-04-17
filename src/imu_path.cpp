@@ -7,6 +7,7 @@
 
 #include <Eigen/Core>
 #include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 #include <tf/transform_broadcaster.h>
 
@@ -58,6 +59,11 @@ void imuCallback(sensor_msgs::Imu msg)
             C = C * (I + (sin(sigma)/sigma)*B + ((1-cos(sigma))/sigma/sigma)*(B*B));
     cout<<"C = "<<endl<<C<<endl;;
 
+    Eigen::Quaterniond qq = Eigen::Quaterniond ( C );
+     //   cout<<"quaternion = \n"<<q.coeffs() <<endl;   // 请注意coeffs的顺序是(x,y,z,w),w为实部，前三者为虚部
+
+  //      cout<<"quaternion = \n"<< qq. <<endl;   // 请注意coeffs的顺序是(x,y,z,w),w为实部，前三者为虚部
+
     //COMPUTE RPY
     ea = C.eulerAngles(0, 1, 2);
     roll = ea(0);
@@ -79,6 +85,8 @@ void imuCallback(sensor_msgs::Imu msg)
     tf::Quaternion q;
     q.setRPY(roll, pitch, yaw);
     transform.setRotation(q);
+    transform.setRotation(tf::Quaternion(q));
+
     br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "body"));
 
 
